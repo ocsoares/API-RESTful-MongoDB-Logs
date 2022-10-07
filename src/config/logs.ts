@@ -1,4 +1,7 @@
-import winston from 'winston';
+import winston, { format, transports } from 'winston';
+
+// OBS: Como o Winston é baseado em nívels, um Log SUPERIOR pode estar CONTIDO em Outro log de nível INFERIOR, exemplo, um log de error em um
+// log de warn (PADRÃO no mundo...) !! <<
 
 const levels = {
     error: 0,
@@ -30,46 +33,46 @@ const colorsLog = {
 winston.addColors(colorsLog);
 
 // Formatando o log com um timestamp no Padrão AMERICANO !! (Ano-mês-dia, hora:minuto:segundo) <<
-const formatLog = winston.format.combine(
-    winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-    winston.format.colorize({ all: true }),
-    winston.format.printf(
+const formatLog = format.combine(
+    format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+    format.colorize({ all: true }),
+    format.printf(
         (info) => `${info.timestamp} - ${info.level}: ${info.message}`
     )
 );
 
 // É um ARRAY !! <<
 const transportsLog = [
-    new winston.transports.Console(),
+    new transports.Console(),
 
     // Vai criar um Arquivo para UM Determinado Log !! <<
-    new winston.transports.File({
+    new transports.File({
         filename: 'logs/error.log',
         level: 'error'
     }),
 
-    new winston.transports.File({
+    new transports.File({
         filename: 'logs/warn.log',
         level: 'warn'
     }),
 
-    // new winston.transports.File({
-    //     filename: 'logs/info.log',
-    //     level: 'info'
-    // }),
+    new transports.File({
+        filename: 'logs/info.log',
+        level: 'info'
+    }),
 
-    // new winston.transports.File({
-    //     filename: 'logs/http.log',
-    //     level: 'http',
-    // }),
+    new transports.File({
+        filename: 'logs/http.log',
+        level: 'http',
+    }),
 
-    // new winston.transports.File({
-    //     filename: 'logs/debug.log',
-    //     level: 'debug'
-    // }),
+    new transports.File({
+        filename: 'logs/debug.log',
+        level: 'debug'
+    }),
 
     // Vai criar um Arquivo para TODOS os LOGS !! <<
-    new winston.transports.File({
+    new transports.File({
         filename: 'logs/all-logs.log'
     })
 ];
