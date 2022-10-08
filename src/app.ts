@@ -1,10 +1,11 @@
 import bodyParser from 'body-parser';
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
-import dashboardRoute from './routes/dashboardRoute';
+import dashboardRoute from './routes/footballPlayerRoute';
 import atlasDBConnection from './database/database';
 import Logger from './config/logs';
 import morganMiddleware from './middleware/morganMiddleware';
+import footballPlayerRoute from './routes/footballPlayerRoute';
 
 const server = express();
 
@@ -22,7 +23,7 @@ server.use(morganMiddleware);
 
 // Padroniza TODAS as Rotas para conter /api/... na URL !! <<
 server.use('/api/',
-    dashboardRoute
+    footballPlayerRoute
 );
 
 server.listen(port, async () => {
