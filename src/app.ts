@@ -1,7 +1,6 @@
 import bodyParser from 'body-parser';
-import express, { Request, Response, NextFunction } from 'express';
+import express from 'express';
 import cors from 'cors';
-import dashboardRoute from './routes/footballPlayerRoute';
 import atlasDBConnection from './database/database';
 import Logger from './config/logs';
 import morganMiddleware from './middleware/morganMiddleware';
