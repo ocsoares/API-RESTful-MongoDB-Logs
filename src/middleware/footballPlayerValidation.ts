@@ -10,7 +10,7 @@ export const footballPlayerValidation = () => {
         body('name').isString().withMessage('Insira um nome válido em string.'),
         body('age').isNumeric().withMessage('Insira uma idade válida em número.'),
         body('height').isNumeric().withMessage('Insira uma altura válida em número.'),
-        body('current_team').isString().withMessage('Insira um time atual válido em string.'),
+        body('current_team').isString().withMessage('Insira o time atual válido em string.'),
         body('rivals_team').optional().isArray().withMessage('Insira um array de times rivais !').custom((rivals_team) => {
             if (Array.isArray(rivals_team)) {
                 rivals_team.forEach((rivals_team) => {
