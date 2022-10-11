@@ -5,6 +5,7 @@ import atlasDBConnection from './database/database';
 import Logger from './config/logs';
 import morganMiddleware from './middleware/morganMiddleware';
 import footballPlayerRoute from './routes/footballPlayerRoute';
+import accountRoute from './routes/accountRoute';
 
 const server = express();
 
@@ -22,7 +23,8 @@ server.use(morganMiddleware);
 
 // Padroniza TODAS as Rotas para conter /api/... na URL !! <<
 server.use('/api/',
-    footballPlayerRoute
+    footballPlayerRoute,
+    accountRoute
 );
 
 server.listen(port, async () => {

@@ -1,4 +1,4 @@
-import mongoose, { model, Schema } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 
 export const FootballPlayerModel = mongoose.model('football_player', new Schema({
     name: { type: String, required: true },
