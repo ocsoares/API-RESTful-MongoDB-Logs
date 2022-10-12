@@ -1,4 +1,4 @@
-import { Router, Request, Response, NextFunction } from "express";
+import { Router } from "express";
 import { FootballPlayerController } from "../controllers/FootballPlayerController";
 import { handleValidation } from "../middleware/handleValidation";
 import { footballPlayerValidation } from "../middleware/footballPlayerValidation";
