@@ -26,7 +26,7 @@ export class FootballPlayerController {
         }
     }
 
-    async searchPlayer(req: Request, res: Response) {
+    async searchPlayer(req: Request, res: Response): Promise<Response> {
         const { idPlayer } = req.params;
 
         try {
@@ -43,18 +43,18 @@ export class FootballPlayerController {
         catch (error: any) {
             Logger.error(`Error: ${error.name} message: ${error.message}`);
             return res.status(StatusCodes.BAD_REQUEST).json({
-                error: 'Não foi possível encontrar o jogador !'
+                error: 'Não foi possível encontrar o jogador! Verifique o ID e tente novamente.'
             });
         }
     }
 
-    async searchAllPlayers(req: Request, res: Response) {
+    async searchAllPlayers(req: Request, res: Response): Promise<Response> {
         try {
             const searchAllPlayers = await FootballPlayerModel.find();
 
             if (!searchAllPlayers) {
                 return res.status(StatusCodes.NOT_FOUND).json({
-                    error: 'Não foi possível encontrar os jogadores !'
+                    error: 'Não foi possível encontrar os jogadores!'
                 });
             }
 
@@ -64,12 +64,12 @@ export class FootballPlayerController {
         catch (error: any) {
             Logger.error(`Error: ${error.name} message: ${error.message}`);
             return res.status(StatusCodes.NOT_FOUND).json({
-                error: 'Não foi possível encontrar os jogadores !'
+                error: 'Não foi possível encontrar os jogadores!'
             });
         }
     }
 
-    async deletePlayer(req: Request, res: Response) {
+    async deletePlayer(req: Request, res: Response): Promise<Response> {
         const { idPlayer } = req.params;
 
         try {
@@ -77,7 +77,7 @@ export class FootballPlayerController {
 
             if (!deletePlayerByID) {
                 return res.status(StatusCodes.NOT_FOUND).json({
-                    error: 'Não foi possível deletar o jogador !'
+                    error: 'Não foi possível deletar o jogador! Verifique o ID e tente novamente.'
                 });
             }
 
@@ -95,7 +95,7 @@ export class FootballPlayerController {
         }
     }
 
-    async updatePlayer(req: Request, res: Response) {
+    async updatePlayer(req: Request, res: Response): Promise<Response> {
         const { idPlayer } = req.params;
         const { name, age, height, current_team, rivals_team } = req.body;
         // const bodyData = req.body; // Pode enviar o req.body INTEIRO, é mais simplificado, porque vai estar Preenchido devido ao Middleware de Verificação !! <<
@@ -111,7 +111,7 @@ export class FootballPlayerController {
 
             if (!updatePlayerByID) {
                 return res.status(StatusCodes.NOT_FOUND).json({
-                    error: 'Não foi possível atualizar o jogador !'
+                    error: 'Não foi possível atualizar o jogador! Verifique o ID e tente novamente.'
                 });
             }
 
@@ -124,7 +124,7 @@ export class FootballPlayerController {
         catch (error: any) {
             Logger.error(`Error: ${error.name} message: ${error.message}`);
             return res.status(StatusCodes.NOT_FOUND).json({
-                error: 'Não foi possível atualizar o jogador !'
+                error: 'Não foi possível atualizar o jogador! Verifique o ID e tente novamente.'
             });
         }
     }

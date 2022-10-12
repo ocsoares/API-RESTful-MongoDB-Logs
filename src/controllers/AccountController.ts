@@ -3,9 +3,10 @@ import { StatusCodes } from 'http-status-codes';
 import Logger from '../config/logs';
 import { AccountModel } from '../models/AccountModel';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 export class AccountController {
-    async registerAccount(req: Request, res: Response) {
+    async registerAccount(req: Request, res: Response): Promise<Response> {
         const { name, email, password } = req.body;
 
         const checkName = await AccountModel.findOne({ name });
@@ -50,25 +51,50 @@ export class AccountController {
         }
     }
 
-    // Fiz o Login com o Método GET ao invés de POST porque, pela lógica, NÃO está criando nada, e sim CONSULTANDO !! <<
-    // OBS: Utilizando o Basic Authentication !!  
-    async loginAccount(req: Request, res: Response) {
-        // Utilizei o headers porque é mais Seguro !! <<
+    async loginAccount(req: Request, res: Response): Promise<Response> {
 
-        // COLOCAR ISSO EM UM MIDDLEWARE e Depois passar o email e password em um req.Algo !! <<
+        const email = req.basicEmail;
+        const password = req.basicPassword;
 
-        // PROCURAR como Usar req.headers.authorization no Middleware de Verificação !! <<
-        const [hashType, hash]: any = req.headers.authorization?.split(' ');
-        console.log('hashType:', hashType, 'hash:', hash);
+        try {
 
-        const [email, password]: any = Buffer.from(hash, 'base64').toString().split(':'); // Descriptando o hash base64 para pegar os Dados (que vem separados por : ) !! <<
-        console.log('email:', email, 'password:', password);
+            const checkLogin = await AccountModel.findOne({ email });
 
-        if (email.length < 1 || password.length < 1) {
-            return res.status(StatusCodes.BAD_REQUEST).json({
-                error: 'Insira as credencias corretamente no Basic Authorization !'
+            if (!checkLogin) {
+                return res.status(StatusCodes.BAD_REQUEST).json({
+                    error: 'Email ou senha inválido !'
+                });
+            }
+
+            const checkPassword = await bcrypt.compare(password, checkLogin.password);
+
+            if (!checkPassword) {
+                Logger.warn(`Alguém tentou acessar a conta com o email ${checkLogin.email}, mas sem sucesso !`);
+                return res.status(StatusCodes.BAD_REQUEST).json({
+                    errro: 'Email ou senha inválido !'
+                });
+            }
+
+            const JWT = jwt.sign({
+                id: checkLogin.id,
+                name: checkLogin.name,
+                email: checkLogin.email
+            }, "" + process.env.JWT_HASH, {
+                expiresIn: '12h'
+            });
+
+            Logger.info(`Usuário com o email '${checkLogin.email}' logado com sucesso !`);
+
+            return res.status(StatusCodes.ACCEPTED).json({
+                message: 'Logado com sucesso !',
+                JWT
             });
         }
-
+        catch (error: any) {
+            Logger.error(`Error: ${error.name} message: ${error.message}`);
+            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+                error: 'Aconteceu um erro no servidor. Tente novamente.'
+            });
+        }
     }
 };
